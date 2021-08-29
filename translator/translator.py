@@ -8,11 +8,8 @@ class Watson:
 
     VERSION = '2018-05-01'
     APIKEY = 'CSh2ZtuxajP2OU0BzHOaRjx2O1KuLk7vV5Sh1SY9BeXs'
-    URL = (
-        'https://api.us-south.language-translator.watson.cloud.ibm.com/'
-        'instances/f7c6534f-1703-4893-bf67-727dce6ec570'
-    )
-
+    URLROOT = 'https://api.us-south.language-translator.watson.cloud.ibm.com/'
+    INSTANCE = 'instances/f7c6534f-1703-4893-bf67-727dce6ec570'
 
 class Translator(Watson):
 
@@ -24,30 +21,36 @@ class Translator(Watson):
             version=__class__.VERSION,
             authenticator=authenticator
         )
-
-        language_translator.set_service_url(__class__.URL)
-
-    def englishtofrench(self, text: str) -> str:
-        response = self.language_translator.translate(
-                        text=text,
-                        model_id='en-fr'
-                    ).get_result()
-
-        return json.dumps(
-            response,
-            indent=2,
-            ensure_ascii=False
+        self.language_translator.set_service_url(
+            __class__.URLROOT + __class__.INSTANCE
         )
 
+    def english_to_french(self, text: str) -> str:
 
-if __name__ == '__main__':
-    translate = Translator()
-    print(
-        translate.english_to_french('Hello, how are you today?')
-    )
+        if text:
+            response = self.language_translator.translate(
+                            text=text,
+                            model_id='en-fr'
+                        ).get_result()
 
-# Take a screenshot of your function and save it as a .jpg or
-# .png with the filename english_to_french
+            return response,
 
-# Take a screenshot of your function and save it as a .jpg or
-# .png with the filename english_to_german.
+        return {
+                'error': 'Null Text',
+                'message': 'There\'s no text informed to translate.'
+            }
+
+    def englishtogerman(self, text: str) -> str:
+
+        if text:
+            response = self.language_translator.translate(
+                            text=text,
+                            model_id='en-de'
+                        ).get_result()
+
+            return response,
+
+        return {
+                'error': 'Null Text',
+                'message': 'There\'s no text informed to translate.'
+            }
